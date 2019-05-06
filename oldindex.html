@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="UTF-8">
+    <title>Namaste Gaon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.6.0/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.6.0/firebaseui.css" />
+    </head>
+    <body>
+      
+    </body>
+    <script src="https://www.gstatic.com/firebasejs/5.10/firebase.js"></script>
+    <script>
+    var firebaseConfig = {
+    apiKey: "AIzaSyAhn2lrE06qubBcWcU5tBHvgjgQlVz2DHU",
+    authDomain: "namaste-gaon-demo.firebaseapp.com",
+    databaseURL: "https://namaste-gaon-demo.firebaseio.com",
+    projectId: "namaste-gaon-demo",
+    storageBucket: "namaste-gaon-demo.appspot.com",
+    messagingSenderId: "249049929663",
+    appId: "1:249049929663:web:654ad2d4d55d9bf4"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    </script>
+    <script src="client.min.js"></script>
+    <script type="text/javascript">
+          var client = new ClientJS();
+          var fingerprint = client.getFingerprint();
+
+          function onlyUnique(value, index, self) {
+            return self.indexOf(value) === index;
+          }
+
+          Date.prototype.YYYYMMDDHHMMSS = function () {
+          var yyyy = this.getFullYear().toString();
+          var MM = pad(this.getMonth() + 1,2);
+          var dd = pad(this.getDate(), 2);
+          var hh = pad(this.getHours(), 2);
+          var mm = pad(this.getMinutes(), 2)
+          var ss = pad(this.getSeconds(), 2)
+
+          return yyyy + MM + dd+  hh + mm + ss;
+          };
+          function pad(number, length) {
+          var str = '' + number;
+          while (str.length < length) {
+             str = '0' + str;
+           }
+          return str;
+          }
+
+          d = new Date();
+          var todayDate = d.YYYYMMDDHHMMSS();
+
+                      //document.getElementById("mainSite").style.display = "none";
+        firebase.database().ref('/reporters/').orderByChild('auth_fps').equalTo(fingerprint).on("value", function(snapshot) {
+          snapshot.forEach(function(data) {
+          if(data.key==null)
+          {
+            console.log("null");
+
+          }
+          else{
+            firebase.database().ref('/reporters/'+data.key+'/ref_code').orderByChild('time').once('value').then(function(snapshot1) {
+              ref_code = snapshot1.val();
+              console.log(ref_code);
+              if(data.key==null)
+              {
+                firebase.database().ref('stats/unidentifiedUsers/'+fingerprint).push({
+                    "timestamp": todayDate,
+
+                });
+                alert('Access denied');
+                window.location.href = "https://www.namastegaon.in";
+              }
+              else{
+
+                /*var UniquefingerprintOverAll = [];
+                var x = 0;
+                firebase.database().ref('/stats/viral/'+ref_code).once('value').then(function(snapshot2) {
+                  console.log(snapshot2.val());
+                  snapshot2.forEach(function(databaseContent)
+                {
+                  UniquefingerprintOverAll[x] = databaseContent.child("fingerprint").val();
+                  console.log(databaseContent.child("time").val())
+                  x++;
+                })
+
+
+                console.log(UniquefingerprintOverAll.filter( onlyUnique ));
+                console.log(UniquefingerprintOverAll.filter( onlyUnique ).length);
+              });*/
+              //var month =
+               var newsTitleList = [];
+               var Uniquefingerprint = [];
+               var twoDArray = [];
+               var x = 0;
+               var y = 0;
+               var todayDate = new Date();
+               var month = ("0" + (todayDate.getMonth() + 1)).slice(-2);
+               firebase.database().ref('/stats/viral/'+month+'/'+ref_code+'/').once('value').then(function(snapshot1) {
+                //console.log(snapshot1.val());
+                snapshot1.forEach(function(data1)
+              {
+                newsTitleList[x] = data1.key;
+                x++;
+                //console.log(data1.child("time").val())
+              })
+              for(let i = 0; i < newsTitleList.length; i++)
+              {
+                Uniquefingerprint[i] = [];
+                firebase.database().ref('/stats/viral/'+month+'/'+ref_code+'/'+newsTitleList[i]).once('value').then(function(snapshot2) {
+                  //console.log(snapshot2.val());
+                  y = 0;
+                  snapshot2.forEach(function(data2)
+                {
+                  y++;
+                })
+                Uniquefingerprint[i] = y +", "+newsTitleList[i]+"<br>"
+                console.log(Uniquefingerprint[i]);
+                });
+              }
+
+              });
+
+              }
+            });
+          }
+
+        });
+        });
+
+                      /*firebase.database().ref('/reporters/'+user.uid+'/ref_code').once('value').then(function(snapshot1) {
+                      ref_code = snapshot1.val();
+                        if(ref_code==null)
+                        {
+                              console.log(user)
+                              firebase.database().ref('stats/unidentifiedUsers/'+user.uid).set({
+                                  email: user.email,
+                                  name: user.displayName,
+                                  photo:user.photoURL
+                              });
+                              firebase.database().ref('stats/unidentifiedUsers/'+user.uid+'/loginAttempts/'+todayDate).set(fingerprint);
+                              alert('Access denied');
+                              window.location.href = "https://www.namastegaon.in"
+                        }
+                        else{
+                              firebase.database().ref('/reporters/'+user.uid+'/loginAttempts/'+todayDate).set(fingerprint);
+                              firebase.database().ref('/stats/viral/'+ref_code).once('value').then(function(snapshot2) {
+                              console.log(snapshot2.val());
+                              });
+                          }
+                      });*/
+    </script>
+</html>

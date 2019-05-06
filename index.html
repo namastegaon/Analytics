@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <!--Import Google Icon Font-->
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <!--Import materialize.css-->
+      <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+      <script src="https://cdn.firebase.com/libs/firebaseui/3.6.0/firebaseui.js"></script>
+      <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.6.0/firebaseui.css" />
+
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <meta charset="UTF-8">
+      <script type="text/javascript">
+          M.AutoInit();
+
+
+      </script>
+      <style type="text/css">
+        td{
+          max-width: 150px;
+           white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+        }
+      </style>
+       <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    </head>
+
+    <body>
+
+
+  <nav>
+    <div class="nav-wrapper  blue-grey darken-2">
+      <a href="#!" class="brand-logo"> नमस्ते गांव</a>
+
+    </div>
+  </nav>
+
+
+
+<div class="container">
+
+
+
+<div class="progress">
+      <div class="indeterminate"></div>
+  </div>
+
+   <div class="col s12 m8 offset-m2 l6 offset-l3">
+        <div class="card-panel grey lighten-5 z-depth-1 ">
+          <div class="row valign-wrapper ">
+            <div class="col s2">
+              <img src="https://media.licdn.com/dms/image/C5103AQGy4ufd9mx_qw/profile-displayphoto-shrink_200_200/0?e=1562803200&v=beta&t=9MrXYdZqSDm3xzrnwgswD6vPowsx4awYb335VQWZubI" alt="" class="circle responsive-img z-depth-2"> <!-- notice the "circle" class -->
+            </div>
+            <div class="col s10">
+              <span class="flow-text">
+               Pulit Khatri
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+<div class="card">
+    <div class="card-content">
+      <h4>Unique users <i>(may)</i></h4>
+    </div>
+    <div class="card-tabs" style="padding: 6px;">
+      <ul class="tabs tabs-fixed-width center-align">
+        <li class="grey lighten-5 "><a class="btn-floating"><i class="material-icons">chevron_left
+</i></a>
+</li>
+        <li class="tab" ><h5 id="UniqueUser"></h5></li>
+        <li class="left-align"><a class="btn-floating"><i class="material-icons">chevron_right</i></a>
+</li>
+      </ul>
+    </div>
+    <div class="card-content grey lighten-4">
+      <h6>Unique users: <b id="UniqueUser"></b></h6>
+    </div>
+  </div>
+
+
+
+<div class="card">
+    <div class="card-content">
+      <h4>Amount earned</h4>
+    </div>
+
+    <div class="card-content grey lighten-4">
+      <h5>₹ <span id="Revenue"></span></h5>
+    </div>
+  </div>
+
+
+
+  <div class="card">
+    <div class="card-content grey lighten-4">
+      <h4>Your url's</h4>
+    </div>
+
+    <div class="card-content">
+
+
+      <table class="striped ">
+        <thead>
+          <tr>
+              <th>S no.</th>
+              <th>URL</th>
+              <th>UNIQUE USERS</th>
+              <th>Revenue per Post</th>
+          </tr>
+        </thead>
+
+        <tbody id="tbody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+<div class="fixed-action-btn">
+  <a class="btn-floating btn-mini blue-grey darken-2">
+    <i class="large material-icons">add</i>
+  </a>
+
+</div>
+
+
+       </div>
+
+     <!--JavaScript at end of body for optimized loading-->
+      <script type="text/javascript" src="js/materialize.min.js"></script>
+      <script type="text/javascript">
+                    M.toast({html: 'Loading...'})
+
+      </script>
+      <script src="https://www.gstatic.com/firebasejs/5.10/firebase.js"></script>
+      <script>
+      var firebaseConfig = {
+      apiKey: "AIzaSyAhn2lrE06qubBcWcU5tBHvgjgQlVz2DHU",
+      authDomain: "namaste-gaon-demo.firebaseapp.com",
+      databaseURL: "https://namaste-gaon-demo.firebaseio.com",
+      projectId: "namaste-gaon-demo",
+      storageBucket: "namaste-gaon-demo.appspot.com",
+      messagingSenderId: "249049929663",
+      appId: "1:249049929663:web:654ad2d4d55d9bf4"
+      };
+      firebase.initializeApp(firebaseConfig);
+
+      </script>
+      <script src="client.min.js"></script>
+      <script type="text/javascript">
+            var client = new ClientJS();
+            var fingerprint = client.getFingerprint();
+
+            function onlyUnique(value, index, self) {
+              return self.indexOf(value) === index;
+            }
+
+            Date.prototype.YYYYMMDDHHMMSS = function () {
+            var yyyy = this.getFullYear().toString();
+            var MM = pad(this.getMonth() + 1,2);
+            var dd = pad(this.getDate(), 2);
+            var hh = pad(this.getHours(), 2);
+            var mm = pad(this.getMinutes(), 2)
+            var ss = pad(this.getSeconds(), 2)
+
+            return yyyy + MM + dd+  hh + mm + ss;
+            };
+            function pad(number, length) {
+            var str = '' + number;
+            while (str.length < length) {
+               str = '0' + str;
+             }
+            return str;
+            }
+
+            d = new Date();
+            var todayDate = d.YYYYMMDDHHMMSS();
+
+                        //document.getElementById("mainSite").style.display = "none";
+          firebase.database().ref('/reporters/').orderByChild('auth_fps').equalTo(fingerprint).on("value", function(snapshot) {
+            snapshot.forEach(function(data) {
+            if(data.key==null)
+            {
+              console.log("null");
+
+            }
+            else{
+              firebase.database().ref('/reporters/'+data.key+'/ref_code').orderByChild('time').once('value').then(function(snapshot1) {
+                ref_code = snapshot1.val();
+                console.log(ref_code);
+                if(data.key==null)
+                {
+                  firebase.database().ref('stats/unidentifiedUsers/'+fingerprint).push({
+                      "timestamp": todayDate,
+
+                  });
+                  alert('Access denied');
+                  window.location.href = "https://www.namastegaon.in";
+                }
+                else{
+
+                  /*var UniquefingerprintOverAll = [];
+                  var x = 0;
+                  firebase.database().ref('/stats/viral/'+ref_code).once('value').then(function(snapshot2) {
+                    console.log(snapshot2.val());
+                    snapshot2.forEach(function(databaseContent)
+                  {
+                    UniquefingerprintOverAll[x] = databaseContent.child("fingerprint").val();
+                    console.log(databaseContent.child("time").val())
+                    x++;
+                  })
+
+
+                  console.log(UniquefingerprintOverAll.filter( onlyUnique ));
+                  console.log(UniquefingerprintOverAll.filter( onlyUnique ).length);
+                });*/
+                //var month =
+                 var newsTitleList = [];
+                 var Uniquefingerprint = [];
+                 var twoDArray = [];
+                 var RevenueArray = [];
+                 var totalRevenue = 0;
+                 var x = 0;
+                 var y = 0;
+                 var todayDate = new Date();
+                 var month = ("0" + (todayDate.getMonth() + 1)).slice(-2);
+                 firebase.database().ref('/stats/viral/'+month+'/'+ref_code+'/').once('value').then(function(snapshot1) {
+                  //console.log(snapshot1.val());
+                  snapshot1.forEach(function(data1)
+                {
+                  newsTitleList[x] = data1.key;
+                  x++;
+                  //console.log(data1.child("time").val())
+                })
+                for(let i = 0; i < newsTitleList.length; i++)
+                {
+                  Uniquefingerprint[i] = [];
+                  firebase.database().ref('/stats/viral/'+month+'/'+ref_code+'/'+newsTitleList[i]).once('value').then(function(snapshot2) {
+                    //console.log(snapshot2.val());
+                    y = 0;
+                    snapshot2.forEach(function(data2)
+                  {
+                    y++;
+                  })
+                  //console.log(Uniquefingerprint[i]);
+                  RevenueArray[i] = y*0.10;
+                  totalRevenue = totalRevenue + parseFloat(y*0.10)
+                  document.getElementById('tbody').innerHTML = document.getElementById('tbody').innerHTML + "<tr><td>"+(parseInt(i)+1)+"</td><td>"+newsTitleList[i]+"</td><td>"+y+"</td><td>"+RevenueArray[i]+"Rs</td></tr>"
+                  document.getElementById('Revenue').innerHTML = totalRevenue;
+                });
+                }
+                p = 0;
+                for(let i = 0; i < newsTitleList.length; i++)
+                {
+                  firebase.database().ref('/stats/viral/'+month+'/'+ref_code+'/'+newsTitleList[i]).once('value').then(function(snapshot2) {
+
+                    snapshot2.forEach(function(data2)
+                  {
+                    p++;
+                  })
+                  document.getElementById('UniqueUser').innerHTML = p;
+                  });
+                }
+                //console.log(totalRevenue);
+                //console.log(sum);
+                });
+
+                }
+              });
+            }
+
+          });
+          });
+
+                        /*firebase.database().ref('/reporters/'+user.uid+'/ref_code').once('value').then(function(snapshot1) {
+                        ref_code = snapshot1.val();
+                          if(ref_code==null)
+                          {
+                                console.log(user)
+                                firebase.database().ref('stats/unidentifiedUsers/'+user.uid).set({
+                                    email: user.email,
+                                    name: user.displayName,
+                                    photo:user.photoURL
+                                });
+                                firebase.database().ref('stats/unidentifiedUsers/'+user.uid+'/loginAttempts/'+todayDate).set(fingerprint);
+                                alert('Access denied');
+                                window.location.href = "https://www.namastegaon.in"
+                          }
+                          else{
+                                firebase.database().ref('/reporters/'+user.uid+'/loginAttempts/'+todayDate).set(fingerprint);
+                                firebase.database().ref('/stats/viral/'+ref_code).once('value').then(function(snapshot2) {
+                                console.log(snapshot2.val());
+                                });
+                            }
+                        });*/
+      </script>
+    </body>
+  </html>

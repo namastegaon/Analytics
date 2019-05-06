@@ -1,0 +1,104 @@
+<html>
+<head></head>
+<body>
+<button type="plus" name="plus">+</button><button type="minus" name="minus">-</button>
+<span id="uniqueMonthViews"></span>
+</body>
+<script src="https://www.gstatic.com/firebasejs/5.10/firebase.js"></script>
+<script>
+var firebaseConfig = {
+apiKey: "AIzaSyAhn2lrE06qubBcWcU5tBHvgjgQlVz2DHU",
+authDomain: "namaste-gaon-demo.firebaseapp.com",
+databaseURL: "https://namaste-gaon-demo.firebaseio.com",
+projectId: "namaste-gaon-demo",
+storageBucket: "namaste-gaon-demo.appspot.com",
+messagingSenderId: "249049929663",
+appId: "1:249049929663:web:654ad2d4d55d9bf4"
+};
+firebase.initializeApp(firebaseConfig);
+
+</script>
+<script src="client.min.js"></script>
+<script type="text/javascript">
+      var client = new ClientJS();
+      var fingerprint = client.getFingerprint();
+
+      function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+      }
+
+      Date.prototype.YYYYMMDDHHMMSS = function () {
+      var yyyy = this.getFullYear().toString();
+      var MM = pad(this.getMonth() + 1,2);
+      var dd = pad(this.getDate(), 2);
+      var hh = pad(this.getHours(), 2);
+      var mm = pad(this.getMinutes(), 2)
+      var ss = pad(this.getSeconds(), 2)
+
+      return yyyy + MM + dd+  hh + mm + ss;
+      };
+      function pad(number, length) {
+      var str = '' + number;
+      while (str.length < length) {
+         str = '0' + str;
+       }
+      return str;
+      }
+
+      d = new Date();
+      var todayDate = d.YYYYMMDDHHMMSS();
+
+      firebase.database().ref('/reporters/').orderByChild('auth_fps').equalTo(fingerprint).on("value", function(snapshot) {
+        snapshot.forEach(function(data) {
+        if(data.key==null)
+        {
+          firebase.database().ref('stats/unidentifiedUsers/'+fingerprint).push({
+              "timestamp": todayDate,
+
+          });
+          alert('Access denied');
+          window.location.href = "https://www.namastegaon.in";
+        }
+        else{
+          firebase.database().ref('/reporters/'+data.key+'/ref_code').orderByChild('time').once('value').then(function(snapshot1) {
+            ref_code = snapshot1.val();
+
+          }).then(function(){
+            firebase.database().ref('/stats/viral/'+ref_code).once('value').then(function(snapshot1) {
+                const array = [];
+                var x = 0;
+                Object.keys(snapshot1.val()).forEach((key) => {
+                array[x] = snapshot1.val()[key];
+                x++;
+                });
+
+                /*var getDaysInMonth = function(month,year) {
+                  return new Date(year, month, 0).getDate();
+                };
+                console.log(getDaysInMonth(02, 2019));*/
+
+
+                for(let u = 0; u < array.length; u++)
+                {
+                  var u_fps = [], u_ = [], l = array.length, i;
+                  var uniqueMonthViews = 0;
+                  for( i=0; i<l; i++) {
+                  if(array[i].time.startsWith("1905") && array[i].URL=="www.namastegaon.in/2019/04/missing-man-found-taldes-well.html") {
+                  if( u_fps[array[i].fingerprint]) continue;
+                  u_fps[array[i].fingerprint] = true;
+                    console.log(array[i].fingerprint)
+                    uniqueMonthViews++;
+                  }
+                  }
+                  document.getElementById('uniqueMonthViews').innerHTML = document.getElementById('uniqueMonthViews').innerHTML + uniqueMonthViews+", " +array[u].URL+ "</br>";
+
+                }
+            });
+          });
+        }
+        });
+      });
+
+</script>
+
+</html>
